@@ -1,0 +1,17 @@
+import requests
+import json
+
+API_KEY = 'my_API_key'
+
+# Parcl Labs 'parcl_id' codes: (Dallas = 5381001, Fort Worth = 5381013, Arlington = 5316885)
+
+url = "https://api.parcllabs.com/v1/market_metrics/5381001/housing_event_prices?start_date=2019-01-01&end_date=2024-05-01"
+
+headers = {
+    "accept": "application/json",
+    "Authorization": API_KEY
+}
+
+response = requests.get(url, headers=headers)
+
+print(json.dumps(response.json(), indent=4))
