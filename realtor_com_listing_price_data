@@ -1,0 +1,36 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib.ticker as tick
+
+pd.set_option('display.max_columns', None)
+pd.set_option('display.max_rows', None)
+
+# Load data. Data sourced from Realtor.com.
+df = pd.read_csv('RDC_Inventory_Core_Metrics_Metro_History.csv')
+
+# Ensure that the 'cbsa_title' is string type and can handle NaNs.
+df['cbsa_title'] = df['cbsa_title'].fillna('').astype(str)
+
+# Filter rows for specific Metro-area
+df_tx = df[df['cbsa_title'].str.contains("Dallas-Fort Worth-Arlington, TX")]
+
+# Select desired columns
+columns = ['month_date_yyyymm', 'median_listing_price', 'average_listing_price']
+df_tx = df_tx[columns]
+
+# Convert 'month_date_yyyymm' to datetime (let's assume first of every month)
+df_tx['month_date_yyyymm'] = pd.to_datetime(df_tx['month_date_yyyymm'], format='%Y%m', errors='coerce')
+
+# Set 'month_date_yyyymm' as index
+df_tx.set_index('month_date_yyyymm', inplace=True)
+
+# Plot the median and average listing price
+df_tx['median_listing_price'].plot(label='Median Listing Price', linewidth=3.0)
+# df_tx['average_listing_price'].plot(label='Average Listing Price')
+plt.legend()
+plt.xlabel('Time', fontname='sans-serif')
+plt.ylabel('Median List Price', fontname='sans-serif')
+plt.grid(True)
+plt.title('Realtor.com Median List Price', fontname='sans-serif')
+plt.gca().yaxis.set_major_formatter(tick.StrMethodFormatter('{x:,.0f}'))
+plt.show()
